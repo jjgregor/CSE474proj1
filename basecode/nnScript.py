@@ -94,16 +94,54 @@ def preprocess():
     i = np.vstack((h, np.hstack((mat['train9'], 9*np.ones((trainSize9, 1), dtype = matType)))))
 
     train_data = i
-    print train_data.shape
+ #   print train_data.shape
 
     # convert the values to type 'double'
     train_data = train_data.astype(np.float64, copy=False)
-    print train_data.dtype
-
+  #  print train_data.dtype
     # normalize the training data
     print train_data[8000,:]
     train_data[:,:-1] /= 255
     print train_data[8000,:]
+    
+     np.linalg.norm(train_data[:784], axis=0)
+
+    # test sizes in test array
+    testSize0 = mat['test0'].shape[0]
+    testSize1 = mat['test1'].shape[0]
+    testSize2 = mat['test2'].shape[0]
+    testSize3 = mat['test3'].shape[0]
+    testSize4 = mat['test4'].shape[0]
+    testSize5 = mat['test5'].shape[0]
+    testSize6 = mat['test6'].shape[0]
+    testSize7 = mat['test7'].shape[0]
+    testSize8 = mat['test8'].shape[0]
+    testSize9 = mat['test9'].shape[0]
+
+    matTestType = mat['train0'].dtype
+
+    np.hstack((mat['test0'], np.zeros((testSize0, 1), dtype = matTestType)))
+
+    # test data stacking, type change, and labeling in last column
+    a = np.vstack((np.hstack((mat['test0'], np.zeros((testSize0, 1), dtype = matTestType))),
+                   np.hstack((mat['test1'], np.ones((testSize1, 1), dtype = matTestType)))))
+    b = np.vstack((a, np.hstack((mat['test2'], 2*np.ones((testSize2, 1), dtype = matTestType)))))
+    c = np.vstack((b, np.hstack((mat['test3'], 3*np.ones((testSize3, 1), dtype = matTestType)))))
+    d = np.vstack((c, np.hstack((mat['test4'], 4*np.ones((testSize4, 1), dtype = matTestType)))))
+    e = np.vstack((d, np.hstack((mat['test5'], 5*np.ones((testSize5, 1), dtype = matTestType)))))
+    f = np.vstack((e, np.hstack((mat['test6'], 6*np.ones((testSize6, 1), dtype = matTestType)))))
+    g = np.vstack((f, np.hstack((mat['test7'], 7*np.ones((testSize7, 1), dtype = matTestType)))))
+    h = np.vstack((g, np.hstack((mat['test8'], 8*np.ones((testSize8, 1), dtype = matTestType)))))
+    i = np.vstack((h, np.hstack((mat['test9'], 9*np.ones((testSize9, 1), dtype = matTestType)))))
+
+    test_data = i
+    print test_data.shape
+
+    test_data = test_data.astype(np.float64, copy=False)
+    print test_data.dtype
+
+    np.linalg.norm(test_data[:784], axis=0)
+
 
     train_label = np.array([])
     validation_data = np.array([])
