@@ -96,13 +96,14 @@ def preprocess():
     train_data = i
     print train_data.shape
 
+    # convert the values to type 'double'
     train_data = train_data.astype(np.float64, copy=False)
     print train_data.dtype
 
-
-    
-    np.linalg.norm(train_data[:784], axis=0)
-
+    # normalize the training data
+    print train_data[8000,:]
+    train_data[:,:-1] /= 255
+    print train_data[8000,:]
 
     train_label = np.array([])
     validation_data = np.array([])
