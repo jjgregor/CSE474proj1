@@ -104,7 +104,7 @@ def preprocess():
     train_data[:,:-1] /= 255
     print train_data[8000,:]
     
-     np.linalg.norm(train_data[:784], axis=0)
+    np.linalg.norm(train_data[:784], axis=0)
 
     # test sizes in test array
     testSize0 = mat['test0'].shape[0]
