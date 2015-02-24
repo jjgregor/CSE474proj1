@@ -61,14 +61,47 @@ def preprocess():
     mat = loadmat('mnist_all.mat') #loads the MAT object as a Dictionary
     
     #Pick a reasonable size for validation data
-    
-    
+
+
     #Your code here
-    train_data = np.array([])
+    #np.vstack((train_data, mat['train0']))
+    np.vstack((mat['train0'], mat['train1']))
+    np.vstack((mat['train0'], mat['train2']))
+    np.vstack((mat['train0'], mat['train3']))
+    np.vstack((mat['train0'], mat['train4']))
+    np.vstack((mat['train0'], mat['train5']))
+    np.vstack((mat['train0'], mat['train6']))
+    np.vstack((mat['train0'], mat['train7']))
+    np.vstack((mat['train0'], mat['train8']))
+    np.vstack((mat['train0'], mat['train9']))
+
+    train_data = mat['train0']
+
+    print mat['train5'].shape
+    print mat['train9'].shape
+    print train_data.shape
+
+    train_data = train_data.astype(np.float64, copy=False)
+
+    print train_data.dtype
+
     train_label = np.array([])
     validation_data = np.array([])
     validation_label = np.array([])
-    test_data = np.array([])
+
+    np.vstack((mat['test0'], mat['test1']))
+    np.vstack((mat['test0'], mat['test2']))
+    np.vstack((mat['test0'], mat['test3']))
+    np.vstack((mat['test0'], mat['test4']))
+    np.vstack((mat['test0'], mat['test5']))
+    np.vstack((mat['test0'], mat['test6']))
+    np.vstack((mat['test0'], mat['test7']))
+    np.vstack((mat['test0'], mat['test8']))
+    np.vstack((mat['test0'], mat['test9']))
+
+    test_data = mat['test0']
+
+
     test_label = np.array([])
     
     return train_data, train_label, validation_data, validation_label, test_data, test_label
