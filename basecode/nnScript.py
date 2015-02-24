@@ -15,21 +15,21 @@ def initializeWeights(n_in,n_out):
        
     # Output: 
     # W: matrix of random initial weights with size (n_out x (n_in + 1))"""
-        
+
     epsilon = sqrt(6) / sqrt(n_in + n_out + 1);
     W = (np.random.rand(n_out, n_in + 1)*2* epsilon) - epsilon;
     return W
-    
-    
-    
+
+
+
 def sigmoid(z):
-    
+
     """# Notice that z can be a scalar, a vector or a matrix
     # return the sigmoid of input z"""
-    
+
     return  #your code here
-    
-    
+
+
 
 def preprocess():
     """ Input:
@@ -57,57 +57,76 @@ def preprocess():
            function
      - normalize the data to [0, 1]
      - feature selection"""
-    
+
     mat = loadmat('mnist_all.mat') #loads the MAT object as a Dictionary
-    
+
     #Pick a reasonable size for validation data
 
 
     #Your code here
-    #np.vstack((train_data, mat['train0']))
-    np.vstack((mat['train0'], mat['train1']))
-    np.vstack((mat['train0'], mat['train2']))
-    np.vstack((mat['train0'], mat['train3']))
-    np.vstack((mat['train0'], mat['train4']))
-    np.vstack((mat['train0'], mat['train5']))
-    np.vstack((mat['train0'], mat['train6']))
-    np.vstack((mat['train0'], mat['train7']))
-    np.vstack((mat['train0'], mat['train8']))
-    np.vstack((mat['train0'], mat['train9']))
 
-    train_data = mat['train0']
+    #size of each image matrix
+    trainSize0 = mat['train0'].shape[0]
+    trainSize1 = mat['train1'].shape[0]
+    trainSize2 = mat['train2'].shape[0]
+    trainSize3 = mat['train3'].shape[0]
+    trainSize4 = mat['train4'].shape[0]
+    trainSize5 = mat['train5'].shape[0]
+    trainSize6 = mat['train6'].shape[0]
+    trainSize7 = mat['train7'].shape[0]
+    trainSize8 = mat['train8'].shape[0]
+    trainSize9 = mat['train9'].shape[0]
 
-    print mat['train5'].shape
-    print mat['train9'].shape
+    matType = mat['train0'].dtype
+
+    np.hstack((mat['train0'], np.zeros((trainSize0, 1), dtype = matType)))
+
+    # training data stacking, type change, and labeling in last column
+    a = np.vstack((np.hstack((mat['train0'], np.zeros((trainSize0, 1), dtype = matType))),
+                   np.hstack((mat['train1'], np.ones((trainSize1, 1), dtype = matType)))))
+    b = np.vstack((a, np.hstack((mat['train2'], 2*np.ones((trainSize2, 1), dtype = matType)))))
+    c = np.vstack((b, np.hstack((mat['train3'], 3*np.ones((trainSize3, 1), dtype = matType)))))
+    d = np.vstack((c, np.hstack((mat['train4'], 4*np.ones((trainSize4, 1), dtype = matType)))))
+    e = np.vstack((d, np.hstack((mat['train5'], 5*np.ones((trainSize5, 1), dtype = matType)))))
+    f = np.vstack((e, np.hstack((mat['train6'], 6*np.ones((trainSize6, 1), dtype = matType)))))
+    g = np.vstack((f, np.hstack((mat['train7'], 7*np.ones((trainSize7, 1), dtype = matType)))))
+    h = np.vstack((g, np.hstack((mat['train8'], 8*np.ones((trainSize8, 1), dtype = matType)))))
+    i = np.vstack((h, np.hstack((mat['train9'], 9*np.ones((trainSize9, 1), dtype = matType)))))
+
+    train_data = i
     print train_data.shape
 
     train_data = train_data.astype(np.float64, copy=False)
-
     print train_data.dtype
+
+
+    
+    np.linalg.norm(train_data[:784], axis=0)
+
 
     train_label = np.array([])
     validation_data = np.array([])
     validation_label = np.array([])
 
-    np.vstack((mat['test0'], mat['test1']))
-    np.vstack((mat['test0'], mat['test2']))
-    np.vstack((mat['test0'], mat['test3']))
-    np.vstack((mat['test0'], mat['test4']))
-    np.vstack((mat['test0'], mat['test5']))
-    np.vstack((mat['test0'], mat['test6']))
-    np.vstack((mat['test0'], mat['test7']))
-    np.vstack((mat['test0'], mat['test8']))
-    np.vstack((mat['test0'], mat['test9']))
+    #Test Data stacking and type changing
+    a = np.vstack((mat['test0'], mat['test1']))
+    b = np.vstack((a, mat['test2']))
+    c = np.vstack((b, mat['test3']))
+    d = np.vstack((c, mat['test4']))
+    e = np.vstack((d, mat['test5']))
+    f = np.vstack((e, mat['test6']))
+    g = np.vstack((f, mat['test7']))
+    h = np.vstack((g, mat['test8']))
+    i = np.vstack((h, mat['test9']))
 
-    test_data = mat['test0']
-
+    test_data = i
 
     test_label = np.array([])
-    
+
     return train_data, train_label, validation_data, validation_label, test_data, test_label
-    
-    
-    
+
+
+
 
 def nnObjFunction(params, *args):
     """% nnObjFunction computes the value of objective function (negative log 
@@ -146,33 +165,33 @@ def nnObjFunction(params, *args):
     % w2: matrix of weights of connections from hidden layer to output layers.
     %     w2(i, j) represents the weight of connection from unit j in hidden 
     %     layer to unit i in output layer."""
-    
+
     n_input, n_hidden, n_class, training_data, training_label, lambdaval = args
-    
+
     w1 = params[0:n_hidden * (n_input + 1)].reshape( (n_hidden, (n_input + 1)))
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
-    obj_val = 0  
-    
+    obj_val = 0
+
     #Your code here
     #
     #
     #
     #
     #
-    
-    
-    
+
+
+
     #Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
     #you would use code similar to the one below to create a flat array
     #obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()),0)
     obj_grad = np.array([])
-    
+
     return (obj_val,obj_grad)
 
 
 
 def nnPredict(w1,w2,data):
-    
+
     """% nnPredict predicts the label of data given the parameter w1, w2 of Neural
     % Network.
 
@@ -187,13 +206,13 @@ def nnPredict(w1,w2,data):
     %       vector of a particular image
        
     % Output: 
-    % label: a column vector of predicted labels""" 
-    
+    % label: a column vector of predicted labels"""
+
     labels = np.array([])
     #Your code here
-    
+
     return labels
-    
+
 
 
 
@@ -205,13 +224,13 @@ train_data, train_label, validation_data,validation_label, test_data, test_label
 #  Train Neural Network
 
 # set the number of nodes in input unit (not including bias unit)
-n_input = train_data.shape[1]; 
+n_input = train_data.shape[1];
 
 # set the number of nodes in hidden unit (not including bias unit)
 n_hidden = 50;
-				   
+
 # set the number of nodes in output unit
-n_class = 10;				   
+n_class = 10;
 
 # initialize the weights into some random matrices
 initial_w1 = initializeWeights(n_input, n_hidden);
