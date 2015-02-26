@@ -140,7 +140,7 @@ def preprocess():
     test_data = test_data.astype(np.float64, copy=False)
     print test_data.dtype
 
-    np.linalg.norm(test_data[:784], axis=0)
+    test_data[:,:-1] /= 255
 
 
     train_label = np.array([])
@@ -148,15 +148,15 @@ def preprocess():
     validation_label = np.array([])
 
     #Test Data stacking and type changing
-    a = np.vstack((mat['test0'], mat['test1']))
-    b = np.vstack((a, mat['test2']))
-    c = np.vstack((b, mat['test3']))
-    d = np.vstack((c, mat['test4']))
-    e = np.vstack((d, mat['test5']))
-    f = np.vstack((e, mat['test6']))
-    g = np.vstack((f, mat['test7']))
-    h = np.vstack((g, mat['test8']))
-    i = np.vstack((h, mat['test9']))
+#    a = np.vstack((mat['test0'], mat['test1']))
+#   b = np.vstack((a, mat['test2']))
+#    c = np.vstack((b, mat['test3']))
+#    d = np.vstack((c, mat['test4']))
+#    e = np.vstack((d, mat['test5']))
+#    f = np.vstack((e, mat['test6']))
+#    g = np.vstack((f, mat['test7']))
+#    h = np.vstack((g, mat['test8']))
+#    i = np.vstack((h, mat['test9']))
 
     test_data = i
 
