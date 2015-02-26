@@ -66,6 +66,10 @@ def preprocess():
 
 
     #Your code here
+    validation_label = np.array([])
+    train_label = np.array([])
+    test_label = np.array([])
+
 
     #size of each image matrix
     trainSize0 = mat['train0'].shape[0]
@@ -102,15 +106,23 @@ def preprocess():
 
     # normalize the training data
     train_data[:,:-1] /= 255
-#    print train_data[8000,:]
 
     # shuffle the matrix
-    map(np.random.shuffle, train_data)
+#    map(np.random.shuffle, train_data)
+    np.random.shuffle(train_data)
 
     # split the matrix into training matrix and validation matrix
     train = train_data[0:50000, 0:785]
     validate = train_data[50000:60000, 0:785]
+#    print train.shape
+#    print validate.shape
 
+    for x in range(0,50000):
+        train_label = np.append(train_label, train_data[x, 784])
+#    print train_label.shape
+    for x in range(0, 10000):
+        validation_label = np.append(validation_label, train_data[x,784])
+#    print validation_label.shape
 
     # test sizes in test array
     testSize0 = mat['test0'].shape[0]
@@ -141,21 +153,22 @@ def preprocess():
     i = np.vstack((h, np.hstack((mat['test9'], 9*np.ones((testSize9, 1), dtype = matTestType)))))
 
     test_data = i
-    print test_data.shape
+   # print test_data.shape
 
     test_data = test_data.astype(np.float64, copy=False)
-    print test_data.dtype
+  #  print test_data.dtype
 
     #normailize test matrtix
     test_data[:,:-1] /= 255
 
+    for x in range(0, 10000):
+        test_label = np.append(test_label, test_data[x,784])
 
-    train_label = np.array([])
-    validation_data = np.array([])
-    validation_label = np.array([])
-    test_label = np.array([])
+ #   print test_label
+ #   print train_label
+ #   print validation_label
 
-    return train_data, train_label, validation_data, validation_label, test_data, test_label
+    return train, train_label, validate, validation_label, test_data, test_label
 
 
 
