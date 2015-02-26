@@ -103,8 +103,16 @@ def preprocess():
     print train_data[8000,:]
     train_data[:,:-1] /= 255
     print train_data[8000,:]
+
+    # shuffle the matrix
+    train_data = np.random.shuffle(train_data)
+
+    # split the matrix into training matrix and validation matrix
+    train, validate = np.vsplit(train_data,50000)
+
+
     
-    np.linalg.norm(train_data[:784], axis=0)
+    #np.linalg.norm(train_data[:784], axis=0)
 
     # test sizes in test array
     testSize0 = mat['test0'].shape[0]
@@ -140,7 +148,7 @@ def preprocess():
     test_data = test_data.astype(np.float64, copy=False)
     print test_data.dtype
 
-    np.linalg.norm(test_data[:784], axis=0)
+    #np.linalg.norm(test_data[:784], axis=0)
 
 
     train_label = np.array([])
