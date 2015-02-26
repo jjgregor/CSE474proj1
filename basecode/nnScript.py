@@ -114,15 +114,13 @@ def preprocess():
     # split the matrix into training matrix and validation matrix
     train = train_data[0:50000, 0:785]
     validate = train_data[50000:60000, 0:785]
-#    print train.shape
-#    print validate.shape
 
     for x in range(0,50000):
         train_label = np.append(train_label, train_data[x, 784])
-#    print train_label.shape
+
     for x in range(0, 10000):
         validation_label = np.append(validation_label, train_data[x,784])
-#    print validation_label.shape
+
 
     # test sizes in test array
     testSize0 = mat['test0'].shape[0]
@@ -153,20 +151,13 @@ def preprocess():
     i = np.vstack((h, np.hstack((mat['test9'], 9*np.ones((testSize9, 1), dtype = matTestType)))))
 
     test_data = i
-   # print test_data.shape
-
     test_data = test_data.astype(np.float64, copy=False)
-  #  print test_data.dtype
 
     #normailize test matrtix
     test_data[:,:-1] /= 255
 
     for x in range(0, 10000):
         test_label = np.append(test_label, test_data[x,784])
-
- #   print test_label
- #   print train_label
- #   print validation_label
 
     return train, train_label, validate, validation_label, test_data, test_label
 
@@ -226,6 +217,8 @@ def nnObjFunction(params, *args):
 
 
 
+
+
     #Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
     #you would use code similar to the one below to create a flat array
     #obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()),0)
@@ -256,6 +249,18 @@ def nnPredict(w1,w2,data):
     labels = np.array([])
     #Your code here
 
+    for j in range(w2.shape[1]):
+        sum = 0.0
+        for i in range(w1.shape[1]):
+            sum += data[i] * w1[i][j]
+        sigmoid(sum)
+
+    for k in range(0, 10000):
+        sum = 0.0
+        for j in range(w2.shape[1]):
+            sum += data[j] * w2[j][k]
+        labels = np.append(sigmoid(sum))
+    print labels.shape
     return labels
 
 
