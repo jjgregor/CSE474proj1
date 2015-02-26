@@ -16,8 +16,8 @@ def initializeWeights(n_in,n_out):
     # Output: 
     # W: matrix of random initial weights with size (n_out x (n_in + 1))"""
 
-    epsilon = sqrt(6) / sqrt(n_in + n_out + 1);
-    W = (np.random.rand(n_out, n_in + 1)*2* epsilon) - epsilon;
+    epsilon = sqrt(6) / sqrt(n_in + n_out + 1)
+    W = (np.random.rand(n_out, n_in + 1)*2* epsilon) - epsilon
     return W
 
 
@@ -27,7 +27,9 @@ def sigmoid(z):
     """# Notice that z can be a scalar, a vector or a matrix
     # return the sigmoid of input z"""
 
-    return  #your code here
+    den = 1.0 + np.exp(-1.0 * z)
+    x = 1.0 / den
+    return x
 
 
 
@@ -100,17 +102,15 @@ def preprocess():
 
     # normalize the training data
     train_data[:,:-1] /= 255
-    print train_data[8000,:]
+#    print train_data[8000,:]
 
     # shuffle the matrix
-    train_data = np.random.shuffle(train_data)
+    map(np.random.shuffle, train_data)
 
     # split the matrix into training matrix and validation matrix
-    train, validate = np.vsplit(train_data,50000)
+    train = train_data[0:50000, 0:785]
+    validate = train_data[50000:60000, 0:785]
 
-
-    
-    np.linalg.norm(train_data[:784], axis=0)
 
     # test sizes in test array
     testSize0 = mat['test0'].shape[0]
