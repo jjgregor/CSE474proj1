@@ -162,8 +162,6 @@ def preprocess():
     return train, train_label, validate, validation_label, test_data, test_label
 
 
-
-
 def nnObjFunction(params, *args):
     """% nnObjFunction computes the value of objective function (negative log 
     %   likelihood error function with regularization) given the parameters 
@@ -208,12 +206,45 @@ def nnObjFunction(params, *args):
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
 
+    #should be (50,785)
+    print w1.shape
+
+    #should be (10,51)
+    print w2.shape
+
     #Your code here
-    #
-    #
-    #
-    #
-    #
+
+    #transpose the training data and labels
+    trans_train = training_data.transpose()
+    trans_train_labels = training_label.transpose()
+
+    #should be (784,50000)
+    print trans_train.shape
+    #should be (784,1)
+    print trans_train_labels.shape
+
+    # makes the initial bias set
+    bias_train = np.ones(1,50000)
+
+    #add the bias row to the bottom of the tranposed training data
+    trans_train = np.vstack((trans_train,bias_train))
+
+    #shape should be (785,50000)
+    print trans_train.shape
+
+    #calculate the training data
+    hidden_layer = w1 * trans_train
+    hidden_layer = sigmoid(hidden_layer)
+
+    #should be (50,50000)
+    print hidden_layer.shape
+
+    #add bias row to hidden layer
+    bias_hidden = np.ones(1,50000)
+    hidden_layer = np.vstack((hidden_layer,bias_hidden))
+
+    output_layer = w2* hidden_layer
+
 
 
 
