@@ -27,9 +27,7 @@ def sigmoid(z):
     """# Notice that z can be a scalar, a vector or a matrix
     # return the sigmoid of input z"""
 
-    den = 1.0 + np.exp(-1.0 * z)
-    x = 1.0 / den
-    return x
+    return 1/(1.0 + np.exp(-z))
 
 
 
@@ -165,7 +163,7 @@ def preprocess():
 def nnObjFunction(params, *args):
     """% nnObjFunction computes the value of objective function (negative log 
     %   likelihood error function with regularization) given the parameters 
-    %   of Neural Networks, thetraining data, their corresponding training 
+    %   of Neural Networks, the training data, their corresponding training
     %   labels and lambda - regularization hyper-parameter.
 
     % Input:
@@ -206,11 +204,11 @@ def nnObjFunction(params, *args):
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
 
-    print "should be (50,785)"
-    print w1.shape
+    # print "should be (50,785)"
+    # print w1.shape
 
     #should be (10,51)
-    print w2.shape
+    # print w2.shape
 
     #Your code here
 
@@ -218,10 +216,10 @@ def nnObjFunction(params, *args):
     trans_train = training_data.transpose()
     trans_train_labels = training_label.transpose()
 
-    print "should be (784,50000)"
-    print trans_train.shape
-    print "should be (784,1)"
-    print trans_train_labels.shape
+    # print "should be (784,50000)"
+    # print trans_train.shape
+    # print "should be (784,1)"
+    # print trans_train_labels.shape
 
     # makes the initial bias set
     bias_train = np.ones(1,50000)
@@ -229,28 +227,28 @@ def nnObjFunction(params, *args):
     #add the bias row to the bottom of the tranposed training data
     trans_train = np.vstack((trans_train,bias_train))
 
-    print "shape should be (785,50000)"
-    print trans_train.shape
+    # print "shape should be (785,50000)"
+    # print trans_train.shape
 
     #calculate the training data
     hidden_layer = w1 * trans_train
     hidden_layer = sigmoid(hidden_layer)
 
-    print "should be (50,50000)"
-    print hidden_layer.shape
+    # print "should be (50,50000)"
+    # print hidden_layer.shape
 
     #add bias row to hidden layer
     bias_hidden = np.ones(1,50000)
     hidden_layer = np.vstack((hidden_layer,bias_hidden))
 
-    print "should be (51,50000)"
-    print hidden_layer.shape
+    # print "should be (51,50000)"
+    # print hidden_layer.shape
 
     output_layer = w2* hidden_layer
     output_layer = sigmoid(output_layer)
 
-    print "should be (10,50000)"
-    print output_layer.shape
+    # print "should be (10,50000)"
+    # print output_layer.shape
 
     ##############################
     # End of Forward Propogation #
@@ -258,7 +256,6 @@ def nnObjFunction(params, *args):
 
     #now need to change labelling to be 1-of-k notation for the error function
     
-
 
 
     #Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
@@ -289,20 +286,28 @@ def nnPredict(w1,w2,data):
     % label: a column vector of predicted labels"""
 
     labels = np.array([])
-    #Your code here
 
-    for j in range(w2.shape[1]):
-        sum = 0.0
-        for i in range(w1.shape[1]):
-            sum += data[i] * w1[i][j]
-        sigmoid(sum)
-
-    for k in range(0, 10000):
-        sum = 0.0
-        for j in range(w2.shape[1]):
-            sum += data[j] * w2[j][k]
-        labels = np.append(sigmoid(sum))
+    a = np.dot(data, w1)
+    b = sigmoid(a)
+    c = np.dot(b, w2)
+    d = sigmoid(c)
+    labels = np.append(labels, d)
     print labels.shape
+
+#     #Your code here
+#
+#     for j in range(w2.shape[1]):
+#         sum = 0.0
+#         for i in range(w1.shape[1]):
+#             sum += data[i] * w1[i][j]
+#         sigmoid(sum)
+#
+#     for k in range(0, 10000):
+#         sum = 0.0
+#         for j in range(w2.shape[1]):
+#             sum += data[j] * w2[j][k]
+#         labels = np.append(sigmoid(sum))
+# #    print labels.shape
     return labels
 
 
