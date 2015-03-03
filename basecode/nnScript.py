@@ -216,10 +216,10 @@ def nnObjFunction(params, *args):
     trans_train = training_data.transpose()
     trans_train_labels = training_label.transpose()
 
-    # print "should be (784,50000)"
-    # print trans_train.shape
-    # print "should be (784,1)"
-    # print trans_train_labels.shape
+    print "should be (784,50000)"
+    print trans_train.shape
+    print "should be (784,1)"
+    print trans_train_labels.shape
 
     # makes the initial bias set
     bias_train = np.ones(1,50000)
