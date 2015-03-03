@@ -322,6 +322,22 @@ def nnObjFunction(params, *args):
     ####################
 
     obj_grad = np.array([])
+    grad_w1 = np.zeros(w1.shape)
+    grad_w2 = np.zeros(w2.shape)
+
+    # Calculating 8 and 9
+    delta2 = output_layer - trans_train_labels
+    derW2 = np.dot(delta2, hidden_layer.transpose())
+
+    # Calculating 12 remove the bias
+    delta1 = np.multiply((1-hidden_layer), hidden_layer)
+    derW1 = np.multiply(delta1, np.dot(w2.transpose(), delta2))
+    derW1 = np.dot(derW1, trans_train.transpose())
+    derW1 = derW1[0:50, :]
+
+    #Calulating Gradient Error Function
+    grad_w1 = grad_w1 + derW1
+    grad_w2 = grad_w2 + derW2
 
 
 
