@@ -83,41 +83,76 @@ def preprocess():
 
     matType = mat['train0'].dtype
 
-    np.hstack((mat['train0'], np.zeros((trainSize0, 1), dtype = matType)))
-
     # training data stacking, type change, and labeling in last column
-    a = np.vstack((np.hstack((mat['train0'], np.zeros((trainSize0, 1), dtype = matType))),
-                   np.hstack((mat['train1'], np.ones((trainSize1, 1), dtype = matType)))))
-    b = np.vstack((a, np.hstack((mat['train2'], 2*np.ones((trainSize2, 1), dtype = matType)))))
-    c = np.vstack((b, np.hstack((mat['train3'], 3*np.ones((trainSize3, 1), dtype = matType)))))
-    d = np.vstack((c, np.hstack((mat['train4'], 4*np.ones((trainSize4, 1), dtype = matType)))))
-    e = np.vstack((d, np.hstack((mat['train5'], 5*np.ones((trainSize5, 1), dtype = matType)))))
-    f = np.vstack((e, np.hstack((mat['train6'], 6*np.ones((trainSize6, 1), dtype = matType)))))
-    g = np.vstack((f, np.hstack((mat['train7'], 7*np.ones((trainSize7, 1), dtype = matType)))))
-    h = np.vstack((g, np.hstack((mat['train8'], 8*np.ones((trainSize8, 1), dtype = matType)))))
-    i = np.vstack((h, np.hstack((mat['train9'], 9*np.ones((trainSize9, 1), dtype = matType)))))
+    train_lab0 =[1,0,0,0,0,0,0,0,0,0]
+    train_lab1 =[0,1,0,0,0,0,0,0,0,0]
+    train_lab2 =[0,0,1,0,0,0,0,0,0,0]
+    train_lab3 =[0,0,0,1,0,0,0,0,0,0]
+    train_lab4 =[0,0,0,0,1,0,0,0,0,0]
+    train_lab5 =[0,0,0,0,0,1,0,0,0,0]
+    train_lab6 =[0,0,0,0,0,0,1,0,0,0]
+    train_lab7 =[0,0,0,0,0,0,0,1,0,0]
+    train_lab8 =[0,0,0,0,0,0,0,0,1,0]
+    train_lab9 =[0,0,0,0,0,0,0,0,0,1]
 
-    train_data = i
+    a = np.tile(train_lab0, (trainSize0, 1))
+    b = np.tile(train_lab1, (trainSize1, 1))
+    c = np.tile(train_lab2, (trainSize2, 1))
+    d = np.tile(train_lab3, (trainSize3, 1))
+    e = np.tile(train_lab4, (trainSize4, 1))
+    f = np.tile(train_lab5, (trainSize5, 1))
+    g = np.tile(train_lab6, (trainSize6, 1))
+    h = np.tile(train_lab7, (trainSize7, 1))
+    i = np.tile(train_lab8, (trainSize8, 1))
+    j = np.tile(train_lab9, (trainSize9, 1))
+
+    temp_label = np.vstack((a, b))
+    temp_label = np.vstack((temp_label, c))
+    temp_label = np.vstack((temp_label, d))
+    temp_label = np.vstack((temp_label, e))
+    temp_label = np.vstack((temp_label, f))
+    temp_label = np.vstack((temp_label, g))
+    temp_label = np.vstack((temp_label, h))
+    temp_label = np.vstack((temp_label, i))
+    temp_label = np.vstack((temp_label, j))
+
+    train_data = np.vstack((mat['train0'], mat['train1']))
+    train_data = np.vstack((train_data, mat['train2']))
+    train_data = np.vstack((train_data, mat['train3']))
+    train_data = np.vstack((train_data, mat['train4']))
+    train_data = np.vstack((train_data, mat['train5']))
+    train_data = np.vstack((train_data, mat['train6']))
+    train_data = np.vstack((train_data, mat['train7']))
+    train_data = np.vstack((train_data, mat['train8']))
+    train_data = np.vstack((train_data, mat['train9']))
+
+    train_data = np.hstack((train_data, temp_label))
+
+ #   print train_data.shape
 
     # convert the values to type 'double'
     train_data = train_data.astype(np.float64, copy=False)
-
-    # normalize the training data
-    train_data[:,:-1] /= 255
 
     # shuffle the matrix
 #    map(np.random.shuffle, train_data)
     np.random.shuffle(train_data)
 
     # split the matrix into training matrix and validation matrix
-    train = train_data[0:50000, 0:785]
-    validate = train_data[50000:60000, 0:785]
+    train = train_data[0:50000, 0:784]
+    validate = train_data[50000:60000, 0:784]
 
-    for x in range(0,50000):
-        train_label = np.append(train_label, train_data[x, 784])
+    train_label = train_data[0:50000, 784:795]
 
-    for x in range(0, 10000):
-        validation_label = np.append(validation_label, train_data[x,784])
+    # normalize the training data
+#    print train_label[2000, :]
+    train /= 255
+#    print train_label[2000, :]
+
+    # for x in range(0,50000):
+    #     train_label = np.append(train_label, train_data[x, 784])
+    #
+    # for x in range(0, 10000):
+    #     validation_label = np.append(validation_label, train_data[x,784])
 
 
     # test sizes in test array
@@ -134,28 +169,57 @@ def preprocess():
 
     matTestType = mat['train0'].dtype
 
-    np.hstack((mat['test0'], np.zeros((testSize0, 1), dtype = matTestType)))
+    # training data stacking, type change, and labeling in last column
+    test_lab0 =[1,0,0,0,0,0,0,0,0,0]
+    test_lab1 =[0,1,0,0,0,0,0,0,0,0]
+    test_lab2 =[0,0,1,0,0,0,0,0,0,0]
+    test_lab3 =[0,0,0,1,0,0,0,0,0,0]
+    test_lab4 =[0,0,0,0,1,0,0,0,0,0]
+    test_lab5 =[0,0,0,0,0,1,0,0,0,0]
+    test_lab6 =[0,0,0,0,0,0,1,0,0,0]
+    test_lab7 =[0,0,0,0,0,0,0,1,0,0]
+    test_lab8 =[0,0,0,0,0,0,0,0,1,0]
+    test_lab9 =[0,0,0,0,0,0,0,0,0,1]
+
+    a = np.tile(test_lab0, (testSize0, 1))
+    b = np.tile(test_lab1, (testSize1, 1))
+    c = np.tile(test_lab2, (testSize2, 1))
+    d = np.tile(test_lab3, (testSize3, 1))
+    e = np.tile(test_lab4, (testSize4, 1))
+    f = np.tile(test_lab5, (testSize5, 1))
+    g = np.tile(test_lab6, (testSize6, 1))
+    h = np.tile(test_lab7, (testSize7, 1))
+    i = np.tile(test_lab8, (testSize8, 1))
+    j = np.tile(test_lab9, (testSize9, 1))
+
+    test_label = np.vstack((a, b))
+    test_label = np.vstack((test_label, c))
+    test_label = np.vstack((test_label, d))
+    test_label = np.vstack((test_label, e))
+    test_label = np.vstack((test_label, f))
+    test_label = np.vstack((test_label, g))
+    test_label = np.vstack((test_label, h))
+    test_label = np.vstack((test_label, i))
+    test_label = np.vstack((test_label, j))
+
+
+    test_data = np.vstack((mat['test0'], mat['test1']))
+    test_data = np.vstack((test_data, mat['test2']))
+    test_data = np.vstack((test_data, mat['test3']))
+    test_data = np.vstack((test_data, mat['test4']))
+    test_data = np.vstack((test_data, mat['test5']))
+    test_data = np.vstack((test_data, mat['test6']))
+    test_data = np.vstack((test_data, mat['test7']))
+    test_data = np.vstack((test_data, mat['test8']))
+    test_data = np.vstack((test_data, mat['test9']))
+
+    test_data = np.hstack((test_data, test_label))
 
     # test data stacking, type change, and labeling in last column
-    a = np.vstack((np.hstack((mat['test0'], np.zeros((testSize0, 1), dtype = matTestType))),
-                   np.hstack((mat['test1'], np.ones((testSize1, 1), dtype = matTestType)))))
-    b = np.vstack((a, np.hstack((mat['test2'], 2*np.ones((testSize2, 1), dtype = matTestType)))))
-    c = np.vstack((b, np.hstack((mat['test3'], 3*np.ones((testSize3, 1), dtype = matTestType)))))
-    d = np.vstack((c, np.hstack((mat['test4'], 4*np.ones((testSize4, 1), dtype = matTestType)))))
-    e = np.vstack((d, np.hstack((mat['test5'], 5*np.ones((testSize5, 1), dtype = matTestType)))))
-    f = np.vstack((e, np.hstack((mat['test6'], 6*np.ones((testSize6, 1), dtype = matTestType)))))
-    g = np.vstack((f, np.hstack((mat['test7'], 7*np.ones((testSize7, 1), dtype = matTestType)))))
-    h = np.vstack((g, np.hstack((mat['test8'], 8*np.ones((testSize8, 1), dtype = matTestType)))))
-    i = np.vstack((h, np.hstack((mat['test9'], 9*np.ones((testSize9, 1), dtype = matTestType)))))
-
-    test_data = i
     test_data = test_data.astype(np.float64, copy=False)
 
     #normailize test matrtix
-    test_data[:,:-1] /= 255
-
-    for x in range(0, 10000):
-        test_label = np.append(test_label, test_data[x,784])
+    test_data /= 255
 
     return train, train_label, validate, validation_label, test_data, test_label
 
@@ -206,8 +270,8 @@ def nnObjFunction(params, *args):
 
     # print "should be (50,785)"
     # print w1.shape
-
-    #should be (10,51)
+    #
+    # print "should be (10,51)"
     # print w2.shape
 
     #Your code here
@@ -216,13 +280,13 @@ def nnObjFunction(params, *args):
     trans_train = training_data.transpose()
     trans_train_labels = training_label.transpose()
 
-    print "should be (784,50000)"
-    print trans_train.shape
-    print "should be (784,1)"
-    print trans_train_labels.shape
+    # print "should be (784,50000)"
+    # print trans_train.shape
+    # print "should be (10,50000)"
+    # print trans_train_labels.shape
 
     # makes the initial bias set
-    bias_train = np.ones(1,50000)
+    bias_train = np.ones((1, 50000))
 
     #add the bias row to the bottom of the tranposed training data
     trans_train = np.vstack((trans_train,bias_train))
@@ -231,20 +295,20 @@ def nnObjFunction(params, *args):
     # print trans_train.shape
 
     #calculate the training data
-    hidden_layer = w1 * trans_train
+    hidden_layer = np.dot(w1, trans_train)
     hidden_layer = sigmoid(hidden_layer)
 
     # print "should be (50,50000)"
     # print hidden_layer.shape
 
     #add bias row to hidden layer
-    bias_hidden = np.ones(1,50000)
+    bias_hidden = np.ones((1, 50000))
     hidden_layer = np.vstack((hidden_layer,bias_hidden))
 
     # print "should be (51,50000)"
     # print hidden_layer.shape
 
-    output_layer = w2* hidden_layer
+    output_layer = np.dot(w2, hidden_layer)
     output_layer = sigmoid(output_layer)
 
     # print "should be (10,50000)"
@@ -255,13 +319,20 @@ def nnObjFunction(params, *args):
     ##############################
 
     #now need to change labelling to be 1-of-k notation for the error function
-    
 
+    J = np.multiply(trans_train_labels, np.log(output_layer))
+    K = np.multiply(1-trans_train_labels, np.log(1-output_layer))
+    error = J+K
+    obj_val = np.sum(error)
+    obj_val = -obj_val/train_data.shape[0]
 
     #Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
     #you would use code similar to the one below to create a flat array
     #obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()),0)
+
     obj_grad = np.array([])
+
+
 
     return (obj_val,obj_grad)
 
@@ -292,22 +363,7 @@ def nnPredict(w1,w2,data):
     c = np.dot(b, w2)
     d = sigmoid(c)
     labels = np.append(labels, d)
-    print labels.shape
 
-#     #Your code here
-#
-#     for j in range(w2.shape[1]):
-#         sum = 0.0
-#         for i in range(w1.shape[1]):
-#             sum += data[i] * w1[i][j]
-#         sigmoid(sum)
-#
-#     for k in range(0, 10000):
-#         sum = 0.0
-#         for j in range(w2.shape[1]):
-#             sum += data[j] * w2[j][k]
-#         labels = np.append(sigmoid(sum))
-# #    print labels.shape
     return labels
 
 
