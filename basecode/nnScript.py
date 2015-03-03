@@ -276,14 +276,13 @@ def nnObjFunction(params, *args):
 
     #Your code here
 
+    ############################
+    # Feed Forward Propagation #
+    ############################
+
     #transpose the training data and labels
     trans_train = training_data.transpose()
     trans_train_labels = training_label.transpose()
-
-    # print "should be (784,50000)"
-    # print trans_train.shape
-    # print "should be (10,50000)"
-    # print trans_train_labels.shape
 
     # makes the initial bias set
     bias_train = np.ones((1, 50000))
@@ -291,31 +290,19 @@ def nnObjFunction(params, *args):
     #add the bias row to the bottom of the tranposed training data
     trans_train = np.vstack((trans_train,bias_train))
 
-    # print "shape should be (785,50000)"
-    # print trans_train.shape
-
     #calculate the training data
     hidden_layer = np.dot(w1, trans_train)
     hidden_layer = sigmoid(hidden_layer)
-
-    # print "should be (50,50000)"
-    # print hidden_layer.shape
 
     #add bias row to hidden layer
     bias_hidden = np.ones((1, 50000))
     hidden_layer = np.vstack((hidden_layer,bias_hidden))
 
-    # print "should be (51,50000)"
-    # print hidden_layer.shape
-
     output_layer = np.dot(w2, hidden_layer)
     output_layer = sigmoid(output_layer)
 
-    # print "should be (10,50000)"
-    # print output_layer.shape
-
     ##############################
-    # End of Forward Propogation #
+    # End of Forward Propagation #
     ##############################
 
     #now need to change labelling to be 1-of-k notation for the error function
@@ -329,6 +316,10 @@ def nnObjFunction(params, *args):
     #Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
     #you would use code similar to the one below to create a flat array
     #obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()),0)
+
+    ####################
+    # Back Propagation #
+    ####################
 
     obj_grad = np.array([])
 
