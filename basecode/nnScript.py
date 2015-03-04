@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import minimize
 from scipy.io import loadmat
 from math import sqrt
+import sys as sys
 
 
 def initializeWeights(n_in,n_out):
@@ -26,8 +27,8 @@ def sigmoid(z):
 
     """# Notice that z can be a scalar, a vector or a matrix
     # return the sigmoid of input z"""
-
-    return 1/(1.0 + np.exp(-z))
+    x = 1/(1.0 + np.exp(-z))
+    return x
 
 
 
@@ -144,16 +145,8 @@ def preprocess():
     train_label = train_data[0:50000, 784:795]
 
     # normalize the training data
-#    print train_label[2000, :]
     train /= 255
 #    print train_label[2000, :]
-
-    # for x in range(0,50000):
-    #     train_label = np.append(train_label, train_data[x, 784])
-    #
-    # for x in range(0, 10000):
-    #     validation_label = np.append(validation_label, train_data[x,784])
-
 
     # test sizes in test array
     testSize0 = mat['test0'].shape[0]
@@ -296,10 +289,21 @@ def nnObjFunction(params, *args):
 
     #add bias row to hidden layer
     bias_hidden = np.ones((1, 50000))
-    hidden_layer = np.vstack((hidden_layer,bias_hidden))
+#    print bias_hidden
+    hidden_layer = np.vstack((hidden_layer, bias_hidden))
+#    print hidden_layer.shape
+#    print trans_train.shape
 
     output_layer = np.dot(w2, hidden_layer)
+    # for i in range(0,50000):
+    #     for j in range(0, 785):
+    #         if output_layer[i][j] > 1:
+    #             print "out of bounds"
+    #             print w2.dtype
+    #             print output_layer[i][j]
+    #             sys.exit(1)
     output_layer = sigmoid(output_layer)
+
 
     ##############################
     # End of Forward Propagation #
@@ -307,6 +311,9 @@ def nnObjFunction(params, *args):
 
     #now need to change labelling to be 1-of-k notation for the error function
 
+    #print trans_train_labels[9, :]
+    #sys.exit(1)
+    print "HERE"
     J = np.multiply(trans_train_labels, np.log(output_layer))
     K = np.multiply(1-trans_train_labels, np.log(1-output_layer))
     error = J+K
@@ -339,9 +346,15 @@ def nnObjFunction(params, *args):
     grad_w1 = grad_w1 + derW1
     grad_w2 = grad_w2 + derW2
 
+    grad_w1 = (grad_w1/train_data.shape[0]) + (lambdaval*w1/train_data.shape[0])
+    grad_w2 = (grad_w2/train_data.shape[0]) + (lambdaval*w2/train_data.shape[0])
 
+    obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()), 0)
 
-    return (obj_val,obj_grad)
+    print obj_val
+    print obj_grad
+
+    return (obj_val, obj_grad)
 
 
 
@@ -400,7 +413,7 @@ initial_w2 = initializeWeights(n_hidden, n_class);
 initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()),0)
 
 # set the regularization hyper-parameter
-lambdaval = 0;
+lambdaval = 1;
 
 
 args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
@@ -415,9 +428,8 @@ nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args,method='
 #and nnObjGradient. Check documentation for this function before you proceed.
 #nn_params, cost = fmin_cg(nnObjFunctionVal, initialWeights, nnObjGradient,args = args, maxiter = 50)
 
-
 #Reshape nnParams from 1D vector into w1 and w2 matrices
-w1 = nn_params[0:n_hidden * (n_input + 1)].reshape( (n_hidden, (n_input + 1)))
+w1 = nn_params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
 w2 = nn_params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
 
 
