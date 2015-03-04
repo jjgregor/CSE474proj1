@@ -145,8 +145,8 @@ def preprocess():
     train_label = train_data[0:50000, 784:795]
     validation_label = train_data[50000:60000, 784:795]
 
-    print validate.shape
-    print validation_label.shape
+#    print validate.shape
+#    print validation_label.shape
 
     # normalize the training data
     validate /= 255
@@ -217,10 +217,10 @@ def preprocess():
     test_data = test_data.astype(np.float64, copy=False)
 
     #normailize test matrtix
-    print test_data.shape
+#    print test_data.shape
     test_data = test_data[0:10000, 0:784]
 
-    print test_label.shape
+#    print test_label.shape
     test_data /= 255
 
     return train, train_label, validate, validation_label, test_data, test_label
@@ -263,11 +263,11 @@ def nnObjFunction(params, *args):
     % w2: matrix of weights of connections from hidden layer to output layers.
     %     w2(i, j) represents the weight of connection from unit j in hidden 
     %     layer to unit i in output layer."""
-    params = np.linspace(-5,5,num=26)
+#    params = np.linspace(-5, 5,num=26)
 
     n_input, n_hidden, n_class, training_data, training_label, lambdaval = args
 
-    w1 = params[0:n_hidden * (n_input + 1)].reshape( (n_hidden, (n_input + 1)))
+    w1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
 
@@ -343,16 +343,15 @@ def nnObjFunction(params, *args):
     delta1 = np.multiply((1-hidden_layer), hidden_layer)
     derW1 = np.multiply(delta1, np.dot(w2.transpose(), delta2))
     derW1 = np.dot(derW1, trans_train.transpose())
-    print w1.shape
-    print w2.shape
     derW1 = derW1[0:w1.shape[0], :]
 
     #Calulating Gradient Error Function
     grad_w1 = grad_w1 + derW1
     grad_w2 = grad_w2 + derW2
 
-    grad_w1 = (grad_w1, lambdaval*w1)
-    grad_w1 = grad_w1/train_data.shape[0]
+    grad_w1 = (grad_w1/train_data.shape[0]) + (lambdaval*w1/train_data.shape[0])
+#    grad_w1 = np.dot(train_data.shape[0], np.sum(np.multiply(lambdaval, w1), grad_w1))
+#    grad_w1 = grad_w1/train_data.shape[0]
     grad_w2 = (grad_w2/train_data.shape[0]) + (lambdaval*w2/train_data.shape[0])
 
     obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()), 0)
@@ -361,7 +360,7 @@ def nnObjFunction(params, *args):
     obj_val += obj*(lambdaval/(2*train_data.shape[0]))
 
     print obj_val
-    print obj_grad
+    #print obj_grad
 
     return (obj_val, obj_grad)
 
@@ -387,15 +386,15 @@ def nnPredict(w1,w2,data):
 
     labels = np.array([])
 
-    print w1.shape
-    print w2.shape
-    print data.shape
+    #print w1.shape
+    #print w2.shape
+    #print data.shape
 
     trans_data = data.transpose()
 
     # makes the initial bias set
-    print data.shape[0]
-    print trans_data.shape
+    #print data.shape[0]
+    #print trans_data.shape
     bias_train = np.ones((1, data.shape[0]))
 
 
@@ -403,7 +402,7 @@ def nnPredict(w1,w2,data):
     trans_data = np.vstack((trans_data, bias_train))
 
     #calculate the training data
-    print trans_data.shape
+    #print trans_data.shape
     hidden_layer = np.dot(w1, trans_data)
     hidden_layer = sigmoid(hidden_layer)
 
@@ -420,10 +419,10 @@ def nnPredict(w1,w2,data):
     labels = np.argmax(output_layer, axis=1)
 
     #labels = np.append(output_layer, labels)
-    print labels.shape
+    #print labels.shape
     labels = labels.reshape((data.shape[0], 1))
-    print labels.shape
-    print labels
+    #print labels.shape
+    #print labels
     return labels
 
 
@@ -433,27 +432,23 @@ def nnPredict(w1,w2,data):
 
 train_data, train_label, validation_data,validation_label, test_data, test_label = preprocess();
 
-
 #  Train Neural Network
 
 # set the number of nodes in input unit (not including bias unit)
-#n_input = train_data.shape[1];
-n_input = 5;
+n_input = train_data.shape[1];
+
 # set the number of nodes in hidden unit (not including bias unit)
-n_hidden = 3;
+n_hidden = 50;
 
 # set the number of nodes in output unit
-n_class = 2;
-
-train_data = np.array([np.linspace(0, 1, num=5), np.linspace(1, 0, num=5)])
-train_label = np.array([0, 1])
+n_class = 10;
 
 # initialize the weights into some random matrices
 initial_w1 = initializeWeights(n_input, n_hidden);
 initial_w2 = initializeWeights(n_hidden, n_class);
 
 # unroll 2 weight matrices into single column vector
-initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()),0)
+initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()), 0)
 
 # set the regularization hyper-parameter
 lambdaval = 0;
@@ -471,9 +466,8 @@ nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args,method='
 #and nnObjGradient. Check documentation for this function before you proceed.
 #nn_params, cost = fmin_cg(nnObjFunctionVal, initialWeights, nnObjGradient,args = args, maxiter = 50)
 
+
 #Reshape nnParams from 1D vector into w1 and w2 matrices
-#w1 = nn_params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
-#w2 = nn_params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
 w1 = nn_params.x[0:n_hidden * (n_input + 1)].reshape( (n_hidden, (n_input + 1)))
 w2 = nn_params.x[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
 
@@ -484,20 +478,19 @@ predicted_label = nnPredict(w1,w2,train_data)
 
 #find the accuracy on Training Dataset
 
-print('\n Training set Accuracy:' + str(100*np.mean((predicted_label == train_label).astype(float))) + '%')
+print '\n Training set Accuracy:' + str(100*np.mean((predicted_label == train_label).astype(float))) + '%'
 
 predicted_label = nnPredict(w1,w2,validation_data)
 
 #find the accuracy on Validation Dataset
 
-print('\n Validation set Accuracy:' + str(100*np.mean((predicted_label == validation_label).astype(float))) + '%')
-
+print '\n Validation set Accuracy:' + str(100*np.mean((predicted_label == validation_label).astype(float))) + '%'
 
 predicted_label = nnPredict(w1,w2,test_data)
 
-print predicted_label.size
-print test_label
-
 #find the accuracy on Validation Dataset
 
-print('\n Test set Accuracy:' + str(100*np.mean((predicted_label == test_label).astype(float))) + '%')
+print '\n Test set Accuracy:' + str(100*np.mean((predicted_label == test_label).astype(float))) + '%'
+
+for i in range(10000):
+    print str(predicted_label[i])+" "+str(test_label[i])
