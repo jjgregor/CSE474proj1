@@ -65,10 +65,6 @@ def preprocess():
 
 
     #Your code here
-    validation_label = np.array([])
-    train_label = np.array([])
-    test_label = np.array([])
-
 
     #size of each image matrix
     trainSize0 = mat['train0'].shape[0]
@@ -81,19 +77,8 @@ def preprocess():
     trainSize7 = mat['train7'].shape[0]
     trainSize8 = mat['train8'].shape[0]
     trainSize9 = mat['train9'].shape[0]
-    matType = mat['train0'].dtype
+    #matType = mat['train0'].dtype
 
-    # training data stacking, type change, and labeling in last column
-#    train_lab0 =[1,0,0,0,0,0,0,0,0,0]
-#   train_lab1 =[0,1,0,0,0,0,0,0,0,0]
-#    train_lab2 =[0,0,1,0,0,0,0,0,0,0]
-#    train_lab3 =[0,0,0,1,0,0,0,0,0,0]
-#    train_lab4 =[0,0,0,0,1,0,0,0,0,0]
-#    train_lab5 =[0,0,0,0,0,1,0,0,0,0]
-#    train_lab6 =[0,0,0,0,0,0,1,0,0,0]
-#    train_lab7 =[0,0,0,0,0,0,0,1,0,0]
-#    train_lab8 =[0,0,0,0,0,0,0,0,1,0]
-#    train_lab9 =[0,0,0,0,0,0,0,0,0,1]
 
     train_data = np.vstack((mat['train0'], mat['train1']))
     train_data = np.vstack((train_data, mat['train2']))
@@ -109,28 +94,28 @@ def preprocess():
     training_label1 = np.ones((1, trainSize1))
     train_temp = np.hstack((training_label0, training_label1))
 
-    training_label2 = np.ones((1, trainSize2))*2
+    training_label2 = 2*np.ones((1, trainSize2))
     train_temp = np.hstack((train_temp, training_label2))
 
-    training_label3 = np.ones((1, trainSize3))*3
+    training_label3 = 3*np.ones((1, trainSize3))
     train_temp = np.hstack((train_temp, training_label3))
 
-    training_label4 = np.ones((1, trainSize4))*4
+    training_label4 = 4*np.ones((1, trainSize4))
     train_temp = np.hstack((train_temp, training_label4))
 
-    training_label5 = np.ones((1, trainSize5))*5
+    training_label5 = 5*np.ones((1, trainSize5))
     train_temp = np.hstack((train_temp, training_label5))
 
-    training_label6 = np.ones((1, trainSize6))*6
+    training_label6 = 6*np.ones((1, trainSize6))
     train_temp = np.hstack((train_temp, training_label6))
 
-    training_label7 = np.ones((1, trainSize7))*7
+    training_label7 = 7*np.ones((1, trainSize7))
     train_temp = np.hstack((train_temp, training_label7))
 
-    training_label8 = np.ones((1, trainSize8))*8
+    training_label8 = 8*np.ones((1, trainSize8))
     train_temp = np.hstack((train_temp, training_label8))
 
-    training_label9 = np.ones((1, trainSize9))*9
+    training_label9 = 9*np.ones((1, trainSize9))
     train_temp = np.hstack((train_temp, training_label9))
 
     train_temp = train_temp.transpose()
@@ -139,32 +124,21 @@ def preprocess():
     train_data = train_data.astype(np.float64, copy=False)
 
     # shuffle the matrix
-#    map(np.random.shuffle, train_data
     train_data /= 255
+
     #stack the labels onto the data so when we shuffle the labels correspond with the correct row still
     train_data = np.hstack((train_data, train_temp))
     np.random.shuffle(train_data)
-    #shave the labels off the data
+    # #shave the labels off the data
+    train_temp = train_data[0:train_data.shape[0], train_data.shape[1]-1:]
     train_data = train_data[0:train_data.shape[0], 0:train_data.shape[1]-1]
-    train_temp = train_data[0:train_data.shape[0],train_data.shape[1]-1:train_data.shape[1]]
 
-
-    #print ('data: ', train_data.shape)
-    #print ('label: ', train_label.shape)
-    #print ('afet shuffle', train_data.shape[0])
-
-    # split the matrix into training matrix and validation matrix.  Training matrix is
-    #(5/6) of the data while Validation is the last (1/6)
+    # #(5/6) of the data while Validation is the last (1/6)
     train = train_data[0:5*train_data.shape[0]/6, 0:train_data.shape[1]]
     validate = train_data[5*train_data.shape[0]/6:train_data.shape[0], 0:train_data.shape[1]]
 
     train_label = train_temp[0:5*train_temp.shape[0]/6]
     validation_label = train_temp[5*train_temp.shape[0]/6:train_temp.shape[0]]
-
-   # print train.shape
-    #print validate.shape
-   # print validation_label.shape
-    #print train_label.shape
 
     # test sizes in test array
     testSize0 = mat['test0'].shape[0]
@@ -180,18 +154,6 @@ def preprocess():
 
     matTestType = mat['train0'].dtype
 
-    # training data stacking, type change, and labeling in last column
-#    test_lab0 =[1,0,0,0,0,0,0,0,0,0]
-#    test_lab1 =[0,1,0,0,0,0,0,0,0,0]
-#    test_lab2 =[0,0,1,0,0,0,0,0,0,0]
-#    test_lab3 =[0,0,0,1,0,0,0,0,0,0]
-#    test_lab4 =[0,0,0,0,1,0,0,0,0,0]
-#    test_lab5 =[0,0,0,0,0,1,0,0,0,0]
-#    test_lab6 =[0,0,0,0,0,0,1,0,0,0]
-#    test_lab7 =[0,0,0,0,0,0,0,1,0,0]
-#    test_lab8 =[0,0,0,0,0,0,0,0,1,0]
-#    test_lab9 =[0,0,0,0,0,0,0,0,0,1]
-
     test_data = np.vstack((mat['test0'], mat['test1']))
     test_data = np.vstack((test_data, mat['test2']))
     test_data = np.vstack((test_data, mat['test3']))
@@ -206,34 +168,33 @@ def preprocess():
     testing_label1 = np.ones((1, testSize1))
     test_label = np.hstack((testing_label0, testing_label1))
 
-    testing_label2 = np.ones((1, testSize2))*2
+    testing_label2 = 2*np.ones((1, testSize2))
     test_label = np.hstack((test_label, testing_label2))
 
-    testing_label3 = np.ones((1, testSize3))*3
+    testing_label3 = 3*np.ones((1, testSize3))
     test_label = np.hstack((test_label, testing_label3))
 
-    testing_label4 = np.ones((1, testSize4))*4
+    testing_label4 = 4*np.ones((1, testSize4))
     test_label = np.hstack((test_label, testing_label4))
 
-    testing_label5 = np.ones((1, testSize5))*5
+    testing_label5 = 5*np.ones((1, testSize5))
     test_label = np.hstack((test_label, testing_label5))
 
-    testing_label6 = np.ones((1, testSize6))*6
+    testing_label6 = 6*np.ones((1, testSize6))
     test_label = np.hstack((test_label, testing_label6))
 
-    testing_label7 = np.ones((1, testSize7))*7
+    testing_label7 = 7*np.ones((1, testSize7))
     test_label = np.hstack((test_label, testing_label7))
 
-    testing_label8 = np.ones((1, testSize8))*8
+    testing_label8 = 8*np.ones((1, testSize8))
     test_label = np.hstack((test_label, testing_label8))
 
-    testing_label9 = np.ones((1, testSize9))*9
+    testing_label9 = 9*np.ones((1, testSize9))
     test_label = np.hstack((test_label, testing_label9))
 
     test_label = test_label.transpose()
 
-#    print test_label.shape
-     # test data stacking, type change, and labeling in last column
+    # test data stacking, type change, and labeling in last column
     test_data = test_data.astype(np.float64, copy=False)
 
     #normailize test matrtix
@@ -241,12 +202,11 @@ def preprocess():
 
     test_data = np.hstack((test_data, test_label))
     np.random.shuffle(test_data)
-     #shave the labels off the data
-    test_data = test_data[0:test_data.shape[0], 0:test_data.shape[1]-1]
+    #shave the labels off the data
     test_label = test_data[0:test_data.shape[0],test_data.shape[1]-1:test_data.shape[1]]
-    #test_data = test_data[0:10000, 0:784]
+    test_data = test_data[0:test_data.shape[0], 0:test_data.shape[1]-1]
 
-    print ("train ", train.shape, "train_label ", train_label.shape, "validate ", validate.shape, "validation lab ", validation_label.shape, "test D ", test_data.shape, "test lab ", test_label.shape)
+    #print ("train ", train.shape, "train_label ", train_label.shape, "validate ", validate.shape, "validation lab ", validation_label.shape, "test D ", test_data.shape, "test lab ", test_label.shape)
     return train, train_label, validate, validation_label, test_data, test_label
 
 
@@ -295,11 +255,7 @@ def nnObjFunction(params, *args):
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
 
-    # print "should be (50,785)"
-    # print w1.shape
-    #
-    # print "should be (10,51)"
-    # print w2.shape
+
 
     #Your code here
     mat = loadmat('mnist_all.mat')
@@ -348,7 +304,7 @@ def nnObjFunction(params, *args):
 
     training_label = temp_label
 
-    print train_label.shape
+    #print train_label.shape
 
     ############################
     # Feed Forward Propagation #
@@ -357,7 +313,7 @@ def nnObjFunction(params, *args):
     #transpose the training data and labels
     trans_train = training_data.transpose()
     trans_train_labels = training_label.transpose()
-    print trans_train_labels.shape
+    #print trans_train_labels.shape
 
     # makes the initial bias set
     bias_train = np.ones((1, trans_train.shape[1]))
@@ -387,7 +343,7 @@ def nnObjFunction(params, *args):
     #now need to change labelling to be 1-of-k notation for the error function
 
     #print trans_train_labels[9, :]
-    print output_layer
+    #print output_layer
     #sys.exit(1)
     print "HERE"
     J = np.multiply(trans_train_labels, np.log(output_layer))
@@ -432,7 +388,7 @@ def nnObjFunction(params, *args):
     obj = np.sum(w1**2) + np.sum(w2**2)
     obj_val += obj*(lambdaval/(2*train_data.shape[0]))
 
-    print obj_val
+    #print obj_val
     #print obj_grad
 
     return (obj_val, obj_grad)
@@ -457,17 +413,9 @@ def nnPredict(w1,w2,data):
     % Output: 
     % label: a column vector of predicted labels"""
 
-    labels = np.array([])
-
-    #print w1.shape
-    #print w2.shape
-    #print data.shape
-
     trans_data = data.transpose()
 
     # makes the initial bias set
-    #print data.shape[0]
-    #print trans_data.shape
     bias_train = np.ones((1, data.shape[0]))
 
 
@@ -475,15 +423,12 @@ def nnPredict(w1,w2,data):
     trans_data = np.vstack((trans_data, bias_train))
 
     #calculate the training data
-    #print trans_data.shape
     hidden_layer = np.dot(w1, trans_data)
     hidden_layer = sigmoid(hidden_layer)
 
     #add bias row to hidden layer
     bias_hidden = np.ones((1, data.shape[0]))
     hidden_layer = np.vstack((hidden_layer, bias_hidden))
-#    print hidden_layer.shape
-#    print trans_train.shape
 
     output_layer = np.dot(w2, hidden_layer)
     output_layer = sigmoid(output_layer)
@@ -492,10 +437,8 @@ def nnPredict(w1,w2,data):
     labels = np.argmax(output_layer, axis=1)
 
     #labels = np.append(output_layer, labels)
-    #print labels.shape
     labels = labels.reshape((data.shape[0], 1))
-    #print labels.shape
-    #print labels
+
     return labels
 
 
@@ -532,7 +475,47 @@ args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
 #Train Neural Network using fmin_cg or minimize from scipy,optimize module. Check documentation for a working example
 
 opts = {'maxiter' : 50}    # Preferred value.
-print ("Just before nnobj ", train_label.shape)
+#print ("Just before nnobj ", train_label.shape)
+
+tempLab = []
+tempMat = np.zeros((1, 10))
+print train_label
+for x in range(train_label.shape[0]):
+    if train_label[x] == 0:
+        tempLab = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 1:
+        tempLab = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 2:
+        tempLab = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 3:
+        tempLab = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 4:
+        tempLab = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 5:
+        tempLab = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 6:
+        tempLab = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 7:
+        tempLab = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 8:
+        tempLab = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+        tempMat = np.vstack((tempMat, tempLab))
+    if train_label[x] == 9:
+        tempLab = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+        tempMat = np.vstack((tempMat, tempLab))
+
+tempMat = tempMat[1:tempMat.shape[0]]
+print tempMat.shape
+print tempMat[0:50000]
+print train_label[0:50000]
 nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args,method='CG', options=opts)
 
 #In Case you want to use fmin_cg, you may have to split the nnObjectFunction to two functions nnObjFunctionVal
@@ -553,7 +536,7 @@ predicted_label = nnPredict(w1,w2,train_data)
 
 print '\n Training set Accuracy:' + str(100*np.mean((predicted_label == train_label).astype(float))) + '%'
 
-predicted_label = nnPredict(w1,w2,validation_data)
+predicted_label = nnPredict(w1, w2, validation_data)
 
 #find the accuracy on Validation Dataset
 
@@ -565,5 +548,5 @@ predicted_label = nnPredict(w1,w2,test_data)
 
 print '\n Test set Accuracy:' + str(100*np.mean((predicted_label == test_label).astype(float))) + '%'
 
-for i in range(10000):
-    print str(predicted_label[i])+" "+str(test_label[i])
+# for i in range(10000):
+#     print str(predicted_label[i])+" "+str(test_label[i])
