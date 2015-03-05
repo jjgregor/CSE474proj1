@@ -258,53 +258,6 @@ def nnObjFunction(params, *args):
 
 
     #Your code here
-    mat = loadmat('mnist_all.mat')
-    trainSize0 = mat['train0'].shape[0]
-    trainSize1 = mat['train1'].shape[0]
-    trainSize2 = mat['train2'].shape[0]
-    trainSize3 = mat['train3'].shape[0]
-    trainSize4 = mat['train4'].shape[0]
-    trainSize5 = mat['train5'].shape[0]
-    trainSize6 = mat['train6'].shape[0]
-    trainSize7 = mat['train7'].shape[0]
-    trainSize8 = mat['train8'].shape[0]
-    trainSize9 = mat['train9'].shape[0]
-
-    train_lab0 =[1,0,0,0,0,0,0,0,0,0]
-    train_lab1 =[0,1,0,0,0,0,0,0,0,0]
-    train_lab2 =[0,0,1,0,0,0,0,0,0,0]
-    train_lab3 =[0,0,0,1,0,0,0,0,0,0]
-    train_lab4 =[0,0,0,0,1,0,0,0,0,0]
-    train_lab5 =[0,0,0,0,0,1,0,0,0,0]
-    train_lab6 =[0,0,0,0,0,0,1,0,0,0]
-    train_lab7 =[0,0,0,0,0,0,0,1,0,0]
-    train_lab8 =[0,0,0,0,0,0,0,0,1,0]
-    train_lab9 =[0,0,0,0,0,0,0,0,0,1]
-
-    a = np.tile(train_lab0, (trainSize0, 1))
-    b = np.tile(train_lab1, (trainSize1, 1))
-    c = np.tile(train_lab2, (trainSize2, 1))
-    d = np.tile(train_lab3, (trainSize3, 1))
-    e = np.tile(train_lab4, (trainSize4, 1))
-    f = np.tile(train_lab5, (trainSize5, 1))
-    g = np.tile(train_lab6, (trainSize6, 1))
-    h = np.tile(train_lab7, (trainSize7, 1))
-    i = np.tile(train_lab8, (trainSize8, 1))
-    j = np.tile(train_lab9, (trainSize9, 1))
-
-    temp_label = np.vstack((a, b))
-    temp_label = np.vstack((temp_label, c))
-    temp_label = np.vstack((temp_label, d))
-    temp_label = np.vstack((temp_label, e))
-    temp_label = np.vstack((temp_label, f))
-    temp_label = np.vstack((temp_label, g))
-    temp_label = np.vstack((temp_label, h))
-    temp_label = np.vstack((temp_label, i))
-    temp_label = np.vstack((temp_label, j))
-
-    training_label = temp_label
-
-    #print train_label.shape
 
     ############################
     # Feed Forward Propagation #
@@ -466,20 +419,14 @@ initial_w2 = initializeWeights(n_hidden, n_class);
 # unroll 2 weight matrices into single column vector
 initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()), 0)
 
-# set the regularization hyper-parameter
+# set the regularizatio hyper-parameter
 lambdaval = 0;
 
-
-args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
-
-#Train Neural Network using fmin_cg or minimize from scipy,optimize module. Check documentation for a working example
-
-opts = {'maxiter' : 50}    # Preferred value.
-#print ("Just before nnobj ", train_label.shape)
+original_train_label = train_label
 
 tempLab = []
 tempMat = np.zeros((1, 10))
-print train_label
+
 for x in range(train_label.shape[0]):
     if train_label[x] == 0:
         tempLab = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -513,10 +460,21 @@ for x in range(train_label.shape[0]):
         tempMat = np.vstack((tempMat, tempLab))
 
 tempMat = tempMat[1:tempMat.shape[0]]
-print tempMat.shape
-print tempMat[0:50000]
-print train_label[0:50000]
+# print tempMat.shape
+# print tempMat[0:50000]
+# print train_label[0:50000]
+train_label = tempMat
+
+args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
+
+#Train Neural Network using fmin_cg or minimize from scipy,optimize module. Check documentation for a working example
+
+opts = {'maxiter' : 50}    # Preferred value.
+#print ("Just before nnobj ", train_label.shape)
+
 nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args,method='CG', options=opts)
+
+train_label = original_train_label
 
 #In Case you want to use fmin_cg, you may have to split the nnObjectFunction to two functions nnObjFunctionVal
 #and nnObjGradient. Check documentation for this function before you proceed.
