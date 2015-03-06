@@ -2,7 +2,6 @@ import numpy as np
 from scipy.optimize import minimize
 from scipy.io import loadmat
 from math import sqrt
-import sys as sys
 
 
 def initializeWeights(n_in,n_out):
@@ -77,8 +76,6 @@ def preprocess():
     trainSize7 = mat['train7'].shape[0]
     trainSize8 = mat['train8'].shape[0]
     trainSize9 = mat['train9'].shape[0]
-    #matType = mat['train0'].dtype
-
 
     train_data = np.vstack((mat['train0'], mat['train1']))
     train_data = np.vstack((train_data, mat['train2']))
@@ -123,20 +120,22 @@ def preprocess():
     # convert the values to type 'double'
     train_data = train_data.astype(np.float64, copy=False)
 
-    # shuffle the matrix
+    # Normalize train_data
     train_data /= 255
 
     #stack the labels onto the data so when we shuffle the labels correspond with the correct row still
     train_data = np.hstack((train_data, train_temp))
+
+    # shuffle the matrix
     np.random.shuffle(train_data)
-    # #shave the labels off the data
+
+    # shave the labels off the data
     train_temp = train_data[0:train_data.shape[0], train_data.shape[1]-1:]
     train_data = train_data[0:train_data.shape[0], 0:train_data.shape[1]-1]
 
-    # #(5/6) of the data while Validation is the last (1/6)
+    # (5/6) of the data while Validation is the last (1/6)
     train = train_data[0:5*train_data.shape[0]/6, 0:train_data.shape[1]]
     validate = train_data[5*train_data.shape[0]/6:train_data.shape[0], 0:train_data.shape[1]]
-
     train_label = train_temp[0:5*train_temp.shape[0]/6]
     validation_label = train_temp[5*train_temp.shape[0]/6:train_temp.shape[0]]
 
@@ -151,8 +150,6 @@ def preprocess():
     testSize7 = mat['test7'].shape[0]
     testSize8 = mat['test8'].shape[0]
     testSize9 = mat['test9'].shape[0]
-
-    matTestType = mat['train0'].dtype
 
     test_data = np.vstack((mat['test0'], mat['test1']))
     test_data = np.vstack((test_data, mat['test2']))
@@ -201,12 +198,14 @@ def preprocess():
     test_data/=255
 
     test_data = np.hstack((test_data, test_label))
+
+    # shuffle the test_data
     np.random.shuffle(test_data)
+
     #shave the labels off the data
     test_label = test_data[0:test_data.shape[0],test_data.shape[1]-1:test_data.shape[1]]
     test_data = test_data[0:test_data.shape[0], 0:test_data.shape[1]-1]
 
-    #print ("train ", train.shape, "train_label ", train_label.shape, "validate ", validate.shape, "validation lab ", validation_label.shape, "test D ", test_data.shape, "test lab ", test_label.shape)
     return train, train_label, validate, validation_label, test_data, test_label
 
 
@@ -253,9 +252,6 @@ def nnObjFunction(params, *args):
 
     w1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
-    obj_val = 0
-
-
 
     #Your code here
 
@@ -266,7 +262,6 @@ def nnObjFunction(params, *args):
     #transpose the training data and labels
     trans_train = training_data.transpose()
     trans_train_labels = training_label.transpose()
-    #print trans_train_labels.shape
 
     # makes the initial bias set
     bias_train = np.ones((1, trans_train.shape[1]))
@@ -280,11 +275,7 @@ def nnObjFunction(params, *args):
 
     #add bias row to hidden layer
     bias_hidden = np.ones((1, trans_train.shape[1]))
-#    print bias_hidden
     hidden_layer = np.vstack((hidden_layer, bias_hidden))
-#    print hidden_layer.shape
-#    print trans_train.shape
-
     output_layer = np.dot(w2, hidden_layer)
     output_layer = sigmoid(output_layer)
 
@@ -293,12 +284,6 @@ def nnObjFunction(params, *args):
     # End of Forward Propagation #
     ##############################
 
-    #now need to change labelling to be 1-of-k notation for the error function
-
-    #print trans_train_labels[9, :]
-    #print output_layer
-    #sys.exit(1)
-    print "HERE"
     J = np.multiply(trans_train_labels, np.log(output_layer))
     K = np.multiply(1-trans_train_labels, np.log(1-output_layer))
     error = J+K
@@ -313,7 +298,6 @@ def nnObjFunction(params, *args):
     # Back Propagation #
     ####################
 
-    obj_grad = np.array([])
     grad_w1 = np.zeros(w1.shape)
     grad_w2 = np.zeros(w2.shape)
 
@@ -332,17 +316,12 @@ def nnObjFunction(params, *args):
     grad_w2 = grad_w2 + derW2
 
     grad_w1 = (grad_w1/train_data.shape[0]) + (lambdaval*w1/train_data.shape[0])
-#    grad_w1 = np.dot(train_data.shape[0], np.sum(np.multiply(lambdaval, w1), grad_w1))
-#    grad_w1 = grad_w1/train_data.shape[0]
     grad_w2 = (grad_w2/train_data.shape[0]) + (lambdaval*w2/train_data.shape[0])
 
     obj_grad = np.concatenate((grad_w1.flatten(), grad_w2.flatten()), 0)
 
     obj = np.sum(w1**2) + np.sum(w2**2)
     obj_val += obj*(lambdaval/(2*train_data.shape[0]))
-
-    #print obj_val
-    #print obj_grad
 
     return (obj_val, obj_grad)
 
@@ -370,7 +349,6 @@ def nnPredict(w1,w2,data):
 
     # makes the initial bias set
     bias_train = np.ones((1, data.shape[0]))
-
 
     #add the bias row to the bottom of the tranposed training data
     trans_data = np.vstack((trans_data, bias_train))
@@ -407,7 +385,7 @@ train_data, train_label, validation_data,validation_label, test_data, test_label
 n_input = train_data.shape[1];
 
 # set the number of nodes in hidden unit (not including bias unit)
-n_hidden = 50;
+n_hidden = 20;
 
 # set the number of nodes in output unit
 n_class = 10;
@@ -420,7 +398,7 @@ initial_w2 = initializeWeights(n_hidden, n_class);
 initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()), 0)
 
 # set the regularizatio hyper-parameter
-lambdaval = 0;
+lambdaval = 1;
 
 original_train_label = train_label
 
@@ -460,9 +438,6 @@ for x in range(train_label.shape[0]):
         tempMat = np.vstack((tempMat, tempLab))
 
 tempMat = tempMat[1:tempMat.shape[0]]
-# print tempMat.shape
-# print tempMat[0:50000]
-# print train_label[0:50000]
 train_label = tempMat
 
 args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
@@ -470,7 +445,6 @@ args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
 #Train Neural Network using fmin_cg or minimize from scipy,optimize module. Check documentation for a working example
 
 opts = {'maxiter' : 50}    # Preferred value.
-#print ("Just before nnobj ", train_label.shape)
 
 nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args,method='CG', options=opts)
 
@@ -505,6 +479,3 @@ predicted_label = nnPredict(w1,w2,test_data)
 #find the accuracy on Validation Dataset
 
 print '\n Test set Accuracy:' + str(100*np.mean((predicted_label == test_label).astype(float))) + '%'
-
-# for i in range(10000):
-#     print str(predicted_label[i])+" "+str(test_label[i])
